@@ -1,0 +1,59 @@
+﻿@model Smart_Banking_system.Models.Branch
+
+@{
+    ViewData["Title"] = "Branch Details";
+}
+
+<div class="container mt-5 mb-5 ">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9 ">
+            <div class="card shadow-lg border-0 rounded-4 bg-secondary">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="bi bi-info-circle me-2"></i>Branch Details
+                    </h4>
+                    <a asp-action="Index" class="btn btn-light btn-sm">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+
+                <div class="card-body p-4">
+                    <dl class="row mb-3">
+                        <dt class="col-sm-4 fw-semibold">NaBranchNameme:</dt>
+                        <dd class="col-sm-8">@Model.BranchName</dd>
+
+                        <dt class="col-sm-4 fw-semibold">BranchCode:</dt>
+                        <dd class="col-sm-8">@Model.BranchCode</dd>
+
+                        <dt class="col-sm-4 fw-semibold">Address:</dt>
+                        <dd class="col-sm-8">@Model.Address</dd>
+
+                        <dt class="col-sm-4 fw-semibold">PhoneNumber:</dt>
+                        <dd class="col-sm-8">@Model.PhoneNumber</dd>
+
+        
+
+
+                        <dt class="col-sm-4 fw-semibold">CreateDate:</dt>
+                        <dd class="col-sm-8">@Model.CreateDate.ToString("dd MMM yyyy")</dd>
+
+
+                    </dl>
+
+                    <div class="d-flex justify-content-end mt-4">
+                        <a asp-action="CreateOrEdit" asp-route-id="@Model.Id" class="btn btn-primary me-2">
+                            <i class="bi bi-pencil-square me-1"></i> Edit
+                        </a>
+                        <form class="m-1" method="post" asp-action="Delete" asp-route-id="@Model.Id" onclick="return confirm('Are You Sure Delete this Data')">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
