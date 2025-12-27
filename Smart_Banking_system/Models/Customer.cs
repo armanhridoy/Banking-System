@@ -28,6 +28,6 @@ public class Customer
 
     // One Customer → Many BankAccounts
     public ICollection<BankAccount> BankAccounts { get; set; } = new List<BankAccount>();
-    public ICollection<Loan> loans { get; set; } = new List<Loan>();
+    public ICollection<Loan> Loans { get; set; } = new List<Loan>();
 }
 

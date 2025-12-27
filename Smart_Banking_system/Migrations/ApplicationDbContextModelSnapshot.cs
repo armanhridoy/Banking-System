@@ -43,6 +43,34 @@ namespace Smart_Banking_system.Migrations
                     b.ToTable("AccountTypes");
                 });
 
+            modelBuilder.Entity("Smart_Banking_system.Models.AdminUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AdminUsers");
+                });
+
             modelBuilder.Entity("Smart_Banking_system.Models.BankAccount", b =>
                 {
                     b.Property<int>("Id")
@@ -69,7 +97,12 @@ namespace Smart_Banking_system.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("BankAccounts");
                 });
@@ -160,6 +193,9 @@ namespace Smart_Banking_system.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -178,6 +214,8 @@ namespace Smart_Banking_system.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BranchId");
+
                     b.ToTable("Employees");
                 });
 
@@ -188,6 +226,9 @@ namespace Smart_Banking_system.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
 
                     b.Property<DateOnly>("DueDate")
                         .HasColumnType("date");
@@ -211,6 +252,8 @@ namespace Smart_Banking_system.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CustomerId");
+
                     b.ToTable("Loans");
                 });
 
@@ -223,6 +266,12 @@ namespace Smart_Banking_system.Migrations
                     b.Property<decimal>("AmountPaid")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("LoanId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LoanId1")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
 
@@ -231,7 +280,38 @@ namespace Smart_Banking_system.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LoanId");
+
+                    b.HasIndex("LoanId1");
+
                     b.ToTable("LoanPayments");
+                });
+
+            modelBuilder.Entity("Smart_Banking_system.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("notifications");
                 });
 
             modelBuilder.Entity("Smart_Banking_system.Models.Transaction", b =>
@@ -244,6 +324,9 @@ namespace Smart_Banking_system.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("BankAccountId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -266,7 +349,90 @@ namespace Smart_Banking_system.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BankAccountId");
+
                     b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("Smart_Banking_system.Models.BankAccount", b =>
+                {
+                    b.HasOne("Smart_Banking_system.Models.Customer", "Customer")
+                        .WithMany("BankAccounts")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("Smart_Banking_system.Models.Employee", b =>
+                {
+                    b.HasOne("Smart_Banking_system.Models.Branch", "Branch")
+                        .WithMany("Employees")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
+                });
+
+            modelBuilder.Entity("Smart_Banking_system.Models.Loan", b =>
+                {
+                    b.HasOne("Smart_Banking_system.Models.Customer", "Customer")
+                        .WithMany("Loans")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("Smart_Banking_system.Models.LoanPayment", b =>
+                {
+                    b.HasOne("Smart_Banking_system.Models.Loan", "Loan")
+                        .WithMany()
+                        .HasForeignKey("LoanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Smart_Banking_system.Models.Loan", null)
+                        .WithMany("LoanPayments")
+                        .HasForeignKey("LoanId1");
+
+                    b.Navigation("Loan");
+                });
+
+            modelBuilder.Entity("Smart_Banking_system.Models.Transaction", b =>
+                {
+                    b.HasOne("Smart_Banking_system.Models.BankAccount", "BankAccount")
+                        .WithMany("Transactions")
+                        .HasForeignKey("BankAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BankAccount");
+                });
+
+            modelBuilder.Entity("Smart_Banking_system.Models.BankAccount", b =>
+                {
+                    b.Navigation("Transactions");
+                });
+
+            modelBuilder.Entity("Smart_Banking_system.Models.Branch", b =>
+                {
+                    b.Navigation("Employees");
+                });
+
+            modelBuilder.Entity("Smart_Banking_system.Models.Customer", b =>
+                {
+                    b.Navigation("BankAccounts");
+
+                    b.Navigation("Loans");
+                });
+
+            modelBuilder.Entity("Smart_Banking_system.Models.Loan", b =>
+                {
+                    b.Navigation("LoanPayments");
                 });
 #pragma warning restore 612, 618
         }

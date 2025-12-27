@@ -34,7 +34,7 @@ public class ApplicationDbContext :DbContext
             .HasForeignKey(t => t.BankAccountId);
 
         modelBuilder.Entity<Customer>()
-            .HasMany(c => c.loans)
+            .HasMany(c => c.Loans)
             .WithOne(l => l.Customer)
             .HasForeignKey(l => l.CustomerId);
 
